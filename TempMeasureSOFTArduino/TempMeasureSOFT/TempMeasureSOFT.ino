@@ -68,14 +68,22 @@ void check_if_fault(){
 
 void loop() {
   uint16_t rtd = thermo.readRTD();
+  
   char temp_message[7] ="+";
   char str_temp[6];
   char temperature_string[6];
-  if(rtd>0){
+  
+  char rx_byte;
+ 
+  
+  if(Serial.available() > 0){
+    rx_byte = Serial.read();
+    if((rtd>0) && (rx_byte == 's')){
       dtostrf(thermo.temperature(RNOMINAL, RREF),4,2,str_temp);
       sprintf(temperature_string,"%s",str_temp);
       strcat(temp_message,temperature_string);
       Serial.println(temp_message); 
+    }
   }
 
   //if(strcmp(buffer,"START\r") == 0 && start_flag == 1){
@@ -89,5 +97,5 @@ void loop() {
     //Serial.print("Temperature = \n"); //Serial.println(thermo.temperature(RNOMINAL, RREF));
     // Check and print any faults
   //}
-  delay(1000);
+  delay(200);
 }
