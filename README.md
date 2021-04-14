@@ -1,1 +1,3 @@
-# praca_inzynierska_bolek
+# Postęp prac 
+
+>Program do wysyłki danych z czujnika (na Arduino) - zrobiony. 
