@@ -1,7 +1,7 @@
 # Postęp prac 
 
-<details>
- <summary>
-  Program do wysyłki danych z czujnika (na Arduino) - zrobiony. 
-  </summary>
-</details>
+- [x] Program do wysyłki danych z czujnika (na Arduino) - zrobiony. 
+- [ ] Program do odbioru danych z Arduino.
+
+
+ 
