@@ -68,15 +68,10 @@ void check_if_fault(){
 
 void loop() {
   uint16_t rtd = thermo.readRTD();
-  //char rtd_message[12] = "TMP+RTD+";
-  char temp_message[13] ="TMP+TEMP+";
-  char rtd_string[4];
+  char temp_message[7] ="+";
   char str_temp[6];
   char temperature_string[6];
   if(rtd>0){
-      //sprintf(rtd_string,"%d",rtd);
-      //strcat(rtd_message,rtd_string);
-      //Serial.println(rtd_message); 
       dtostrf(thermo.temperature(RNOMINAL, RREF),4,2,str_temp);
       sprintf(temperature_string,"%s",str_temp);
       strcat(temp_message,temperature_string);
