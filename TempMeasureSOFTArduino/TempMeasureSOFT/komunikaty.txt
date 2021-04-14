@@ -1,0 +1,13 @@
+The messages which are being sending from the computer:
+
+The main messages:
+TMP+RTD+xxxx - the RTD value which in the future will be necessery to compute the ratio and the resistance of the PT100
+TMP+VAL+xx.xx - the value of the temperature which comes from thermo.temperature function beased on RNOMINAL and RREF
+
+The fault messahes:
+TMP+HIGH+ - the information about RTD High Threshold
+TMP+LOW+ - the information about RTD low threshold
+TMP+REFINM+ - REFIN- > 0.85 x Bias
+TMP+RTDINM+ - REFIN- < 0.85 x Bias - FORCE- open
+TMP+VOL+ - RTDIN- < 0.85 x Bias - FORCE- open
+TMP+UOVOL+ - Under/Over voltage
