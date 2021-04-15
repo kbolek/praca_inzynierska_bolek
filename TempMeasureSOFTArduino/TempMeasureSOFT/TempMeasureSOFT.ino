@@ -97,5 +97,5 @@ void loop() {
     //Serial.print("Temperature = \n"); //Serial.println(thermo.temperature(RNOMINAL, RREF));
     // Check and print any faults
   //}
-  delay(200);
+  delay(100);
 }
