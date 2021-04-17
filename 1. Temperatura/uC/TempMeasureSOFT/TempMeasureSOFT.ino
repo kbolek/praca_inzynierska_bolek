@@ -1,5 +1,4 @@
 #include <Adafruit_MAX31865.h>
-#include <stdio.h>
 
 #define SPI_CS 17
 #define SPI_MOSI 16
@@ -9,14 +8,15 @@
 #define RREF      430.0
 #define RNOMINAL  100.0
 
-Adafruit_MAX31865 thermo = Adafruit_MAX31865(SPI_CS, SPI_MOSI, SPI_MISO, SPI_CLK);
+Adafruit_MAX31865 * thermo;
 
 void setup() {
   Serial.begin(9600);
-  thermo.begin(MAX31865_4WIRE);
+  thermo = new Adafruit_MAX31865(SPI_CS, SPI_MOSI, SPI_MISO, SPI_CLK);
+  thermo->begin(MAX31865_4WIRE);
 }
 
 void loop() {
   String ser = Serial.readStringUntil('\n');
-  Serial.print(String(thermo.temperature(RNOMINAL, RREF)) + "\n");   
+  Serial.print(String(thermo->temperature(RNOMINAL, RREF)) + '\n');   
 }
