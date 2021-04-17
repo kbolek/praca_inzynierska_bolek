@@ -1,11 +1,10 @@
 import serial
+import serial.tools.list_ports
 import keyboard
-import sys
 
-if __name__ == "__main__":
-      
+if __name__ == "__main__":    
     try:
-        port = str(sys.argv[1])
+        port = next((str(port)[:4] for port in list(serial.tools.list_ports.comports()) if "Arduino Micro" in str(port)),None)
         baudrate = 9600
         with serial.Serial(port,baudrate,timeout = 0.5) as ser:
             while(not keyboard.is_pressed(' ')):
