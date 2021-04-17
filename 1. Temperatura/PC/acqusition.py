@@ -4,7 +4,7 @@ import keyboard
 
 if __name__ == "__main__":    
     try:
-        port = next((str(port)[:4] for port in list(serial.tools.list_ports.comports()) if "Arduino Micro" in str(port)),None)
+        port = "COM5"
         baudrate = 9600
         with serial.Serial(port,baudrate,timeout = 0.5) as ser:
             while(not keyboard.is_pressed(' ')):
@@ -17,4 +17,4 @@ if __name__ == "__main__":
     
 
     
-  
+   
