@@ -13,7 +13,7 @@ Adafruit_MAX31865 * thermo;
 void setup() {
   Serial.begin(9600);
   thermo = new Adafruit_MAX31865(SPI_CS, SPI_MOSI, SPI_MISO, SPI_CLK);
-  thermo->begin(MAX31865_4WIRE);
+  thermo->begin(MAX31865_4WIRE); 
 }
 
 void loop() {
