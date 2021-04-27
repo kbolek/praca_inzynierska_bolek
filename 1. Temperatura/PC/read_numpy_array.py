@@ -1,11 +1,20 @@
 import numpy as np
+from matplotlib import pyplot as plt
 
-if __name__ == "__main__":  
-    file_path = 'acquisition.npy'
-    with open(file_path,'rb') as file:
-        x = np.load(file)
-        print(x)
-         
+
+FILE_PATH = 'acquisition.npy'
+try:
+    with open(FILE_PATH,'rb') as file:
+        data = np.load(file)
+        
+        plt.title('Temperature measurement')
+        plt.ylabel('Temperature (Celsius)')
+        plt.xlabel('Time (seconds)')
+        plt.plot(data[0],data[1])
+        plt.show()
+ 
+except Exception as exc:
+        print(exc)        
            
          
      

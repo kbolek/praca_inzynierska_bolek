@@ -1,45 +1,60 @@
 import serial
 import keyboard
+import sys 
 import numpy as np
 from matplotlib import pyplot as plt
-import math
 import pause
 from pathlib import Path 
+import time
 
-if __name__ == "__main__":   
-    temperature_samples = []
-    port     = "COM5"
-    baudrate = 9600
-    period   = 0.5
-    file_path = 'acquisition.npy'
-    try:
+PORT_NAME = "COM5" 
+BAUDRATE  = 9600 
+TIMEOUT   = 0.5
+PERIOD    = 0.5 
+
+FILE_PATH = "acquisition.npy"  
+
+temperature_l = []
+time_l = []
+
+if Path(FILE_PATH).is_file():
+    print("File exsists")   
+    sys.exit()
         
-        if Path(file_path).is_file():
-            raise Exception("File exsists")        
-              
-        with serial.Serial(port,baudrate,timeout = 0.5) as ser:
+try:
+        
+    with serial.Serial(PORT_NAME,BAUDRATE,timeout = TIMEOUT) as ser:
+            start_time = time.time()
             while(not keyboard.is_pressed(' ')):
                 ser.write('s\n'.encode())
                 rx_data =  ser.readline().decode('utf-8').rstrip()
                 print(rx_data)
-                temperature_samples.append(float(rx_data))   
-                pause.seconds(period)
-                         
-    except Exception as exc:
+                temperature_l.append(float(rx_data))   
+                time_l.append(time.time() - start_time)
+                pause.seconds(PERIOD)
+except Exception as exc:
         print(exc)
-        
-    finally:
-         y =  np.array(temperature_samples)
-         x = np.linspace(0,math.ceil(y.size/(1/period)),num=y.size)
+    
+finally:
+         y =  np.array(temperature_l)
+         x = np.array(time_l)
          plt.title('Temperature measurement')
          plt.ylabel('Temperature (Celsius)')
          plt.xlabel('Time (seconds)')
          plt.plot(x,y)
          plt.show() 
          
-         with open(file_path,'wb') as file:
-             data = np.array([x,y])
-             np.save(file,data)
+         data = np.array([x,y])
+         np.save(FILE_PATH,data)    
+            
+        
+                
+              
+        
+                         
+    
+        
+    
             
     
    
