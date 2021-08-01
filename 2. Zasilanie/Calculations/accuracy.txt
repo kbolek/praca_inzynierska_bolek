@@ -1,0 +1,3 @@
+Assuming that our max current is 1A and we want the highest precision (12bits)
+with PGA =/8. Assuming I choose your shunt to be 320mV/1A = 0.32 Ohm.
+Then current_LSB = (1/2^(ADC bits)*2^(gain bits)) = 1/(2^12 * 2^3) = 1/(2^15).
