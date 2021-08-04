@@ -26,7 +26,7 @@ The function simply read the value of the shunt voltage register by I2C.
 >void callib_voltage(int16_t measured_voltage_mv);
 
 The function determine the voltage coefficient by division of actuall measured voltage (by accurate multimetr) and voltage appointed by the value of the shunt voltage register (multiply by 0.01 because of the constant Shunt Volatge LSB of 10µV). 
-The coefficient then is saving in the EEPROM using put() EEPROM library function which ** writes out a set of bytes ** using the update function which allow to write out an float object. 
+The coefficient then is saving in the EEPROM using put() EEPROM library function which **writes out a set of bytes** using the update function which allow to write out an float object. 
 
 
 
