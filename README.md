@@ -19,6 +19,12 @@ The function set up the parameters of the INA219 measurement like:
 4. Value for shunt ADC resolution.
 5. Value for shunt ADC resolution.
 
+>int16_t read_voltage_reg();
 
+The function simply read the value of the shunt voltage register by I2C. 
+
+>void callib_voltage(int16_t measured_voltage_mv);
+
+The function is wrote to determine the voltage coefficient by division of actuall measured voltage (by accurate multimetr) and voltage appointed by the value of the shunt voltage register (multiply by 0.01 because of the constant Shunt Volatge LSB of 10µV).
 
 
