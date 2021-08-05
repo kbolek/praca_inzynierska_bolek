@@ -22,13 +22,10 @@ void loop(void)
       Serial.print("Voltage callibrated");
     }
     else if(serial.substring(0,2) == "rc"){
-      Serial.print(String(read_current(),10) + '\n');
+      Serial.print(String(read_current(),30) + '\n');
     }
     else if(serial.substring(0,2) == "rv"){
       Serial.print(String(read_voltage(),10) + '\n');
     }
      
   }
-
-
-

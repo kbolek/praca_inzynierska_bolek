@@ -55,9 +55,12 @@
 #define INA219_REG_CALIBRATION (0x05)
 
 /*RSHUNT*/
-#define RSHUNT 0.1
-#define ADC_RESOLUTION 4096.0
-#define CURRENT_LSB 0.000031 
+#define INA219_RSHUNT 0.1
+#define INA219_ADC_RESOLUTION 4096.0
+#define INA219_CURRENT_LSB 0.000031 
+
+#define INA219_CAL_VALUE ((INA219_ADC_RESOLUTION * 0.00001f) / (INA219_CURRENT_LSB*INA219_RSHUNT))
+#define INA219_CURRENT_DIVIDER (1.0f / (INA219_CURRENT_LSB * 1000.0f) )
 
 /*=========================================================================
                          LIBRARY FUNCTIONS
@@ -67,9 +70,10 @@ bool INA219_begin(TwoWire *theWire = &Wire);
 void setCalibration_16V_1A();
 bool success();
 int16_t read_voltage_reg();
-void callib_voltage(int16_t measured_voltage_mv);
+int16_t read_current_reg();
+void callib_voltage(float measured_voltage_mv);
 float read_voltage();
-void callib_current(int16_t measured_current_ma);
+void callib_current(float measured_current_ma);
 float read_current();
 
 #endif
