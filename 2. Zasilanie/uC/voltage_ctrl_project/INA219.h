@@ -20,9 +20,6 @@
 #define INA219_CONFIG_RESET (0x8000)
 #define INA219_CONFIG_BVOLTAGERANGE_MASK (0x2000)
 
-/** BUS VOLTAGE RANGE VALUE **/
-#define INA219_CONFIG_BVOLTAGERANGE_16V (0x0000)
-
 /** MASK FOR GAIN BITS**/
 #define INA219_CONFIG_GAIN_MASK (0x1800)
 #define INA219_CONFIG_GAIN_1_40MV (0x0000)
@@ -39,14 +36,14 @@
 #define INA219_CONFIG_MODE_MASK (0x0007)
 #define INA219_CONFIG_MODE_SANDBVOLT_CONTINUOUS (0x07)
 
+/** BUS VOLTAGE RANGE VALUE **/
+#define INA219_CONFIG_BVOLTAGERANGE_16V (0x0000)
+
 /** SHUNT VOLTAGE REGISTER **/
 #define INA219_REG_SHUNTVOLTAGE (0x01)
 
 /** BUS VOLTAGE REGISTER**/
 #define INA219_REG_BUSVOLTAGE (0x02)
-
-/** POWER REGISTER **/
-#define INA219_REG_POWER (0x03)
 
 /** CURRENT REGISTER **/
 #define INA219_REG_CURRENT (0x04)
@@ -55,9 +52,9 @@
 #define INA219_REG_CALIBRATION (0x05)
 
 /*RSHUNT*/
-#define INA219_RSHUNT 0.1
-#define INA219_ADC_RESOLUTION 4096.0
-#define INA219_CURRENT_LSB 0.000031 
+#define INA219_RSHUNT 0.1f
+#define INA219_ADC_RESOLUTION 4096.0f
+#define INA219_CURRENT_LSB 0.000031f
 
 #define INA219_CAL_VALUE ((INA219_ADC_RESOLUTION * 0.00001f) / (INA219_CURRENT_LSB*INA219_RSHUNT))
 #define INA219_CURRENT_DIVIDER (1.0f / (INA219_CURRENT_LSB * 1000.0f) )
@@ -69,11 +66,15 @@
 bool INA219_begin(TwoWire *theWire = &Wire);
 void setCalibration_16V_1A();
 bool success();
+
 int16_t read_voltage_reg();
-int16_t read_current_reg();
 void callib_voltage(float measured_voltage_mv);
 float read_voltage();
+float read_voltage_coefficient();
+
+int16_t read_current_reg();
 void callib_current(float measured_current_ma);
 float read_current();
+float read_current_coefficient();
 
 #endif

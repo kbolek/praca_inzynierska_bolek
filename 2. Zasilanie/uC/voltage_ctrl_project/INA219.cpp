@@ -6,7 +6,10 @@
 Adafruit_I2CDevice *i2c_dev = NULL;
 uint8_t ina219_i2caddr = -1;
 bool _success;
-uint8_t callib_vol_addr;
+
+/*=========================================================================
+                    INA219 CONFIGURATION FUNCTIONS
+**************************************************************************/
 
 bool INA219_begin(TwoWire *theWire){
     ina219_i2caddr = INA219_ADDRESS;
@@ -27,7 +30,6 @@ bool INA219_begin(TwoWire *theWire){
 }
 
 void setCalibration_16V_1A(){
-
   Adafruit_BusIO_Register calibration_reg =
       Adafruit_BusIO_Register(i2c_dev, INA219_REG_CALIBRATION, 2, MSBFIRST);
   calibration_reg.write(INA219_CAL_VALUE, 2);
@@ -42,14 +44,9 @@ void setCalibration_16V_1A(){
 
 }
 
-int16_t read_voltage_reg() {
-  uint16_t value;
-  Adafruit_BusIO_Register shunt_voltage_reg =
-      Adafruit_BusIO_Register(i2c_dev, INA219_REG_SHUNTVOLTAGE, 2, MSBFIRST);
-  _success = shunt_voltage_reg.read(&value);
-  return value;
-}
-
+/*=========================================================================
+        INA219 FUNCTIONS FOR READING THE CURRENT
+**************************************************************************/
 int16_t read_current_reg(){
   uint16_t value;
 
@@ -64,6 +61,35 @@ int16_t read_current_reg(){
   return value;
 }
 
+void callib_current(float measured_current_ma){
+  float coefficient = measured_current_ma/read_current_reg();
+  EEPROM.put(1,coefficient);
+
+}
+
+float read_current(){
+  float coefficient;
+  EEPROM.get(1,coefficient);
+  return read_current_reg() * coefficient;
+}
+
+float read_current_coefficient(){
+  float coefficient;
+  EEPROM.get(1,coefficient);
+  return coefficient;
+}
+
+/*=========================================================================
+        INA219 FUNCTIONS FOR READING THE SHUNT VOLTAGE
+**************************************************************************/
+int16_t read_voltage_reg() {
+  uint16_t value;
+  Adafruit_BusIO_Register shunt_voltage_reg =
+      Adafruit_BusIO_Register(i2c_dev, INA219_REG_SHUNTVOLTAGE, 2, MSBFIRST);
+  _success = shunt_voltage_reg.read(&value);
+  return value;
+}
+
 void callib_voltage(float measured_voltage_mv){
   /*ASSUMPTION: THE FUNCTION IS EXPRESSED AS Y=AX*/
   float coefficient = measured_voltage_mv/(read_voltage_reg());
@@ -73,24 +99,13 @@ void callib_voltage(float measured_voltage_mv){
 float read_voltage(){
   float coefficient;
   EEPROM.get(0,coefficient);
-  float voltage_mv = (read_voltage_reg()) * coefficient;
-  return voltage_mv;
+  return read_voltage_reg() * coefficient;
 }
 
-void callib_current(float measured_current_ma){
-
-  float coefficient = measured_current_ma/read_current_reg();
-  EEPROM.put(1,coefficient);
-
-}
-
-float read_current(){
- 
+float read_voltage_coefficient(){
   float coefficient;
-  EEPROM.get(1,coefficient);
-  float current_ma = (read_current_reg()) * coefficient;
-  return current_ma;
+  EEPROM.get(0,coefficient);
+  return coefficient;
 }
-
 
 
