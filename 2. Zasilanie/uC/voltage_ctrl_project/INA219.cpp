@@ -6,7 +6,7 @@
 Adafruit_I2CDevice *i2c_dev = NULL;
 uint8_t ina219_i2caddr = -1;
 bool _success;
-uint8_t callib_vol_addr;
+
 
 bool INA219_begin(TwoWire *theWire){
     ina219_i2caddr = INA219_ADDRESS;
@@ -28,10 +28,6 @@ bool INA219_begin(TwoWire *theWire){
 
 void setCalibration_16V_1A(){
 
-  Adafruit_BusIO_Register calibration_reg =
-      Adafruit_BusIO_Register(i2c_dev, INA219_REG_CALIBRATION, 2, MSBFIRST);
-  calibration_reg.write(INA219_CAL_VALUE, 2);
-
     uint16_t config = INA219_CONFIG_BVOLTAGERANGE_16V |
                       INA219_CONFIG_GAIN_1_40MV  | INA219_CONFIG_BADCRES_12BIT_128S_69MS| 
                       INA219_CONFIG_SADCRES_12BIT_128S_69MS| 
@@ -52,12 +48,7 @@ int16_t read_voltage_reg() {
 
 int16_t read_current_reg(){
   uint16_t value;
-
-  /*sometimes a sharp load will reset the INA219, which will reset cal register*/
-  Adafruit_BusIO_Register calibration_reg =
-      Adafruit_BusIO_Register(i2c_dev, INA219_REG_CALIBRATION, 2, MSBFIRST);
-  calibration_reg.write(INA219_CAL_VALUE, 2);
-
+  
   Adafruit_BusIO_Register current_reg =
       Adafruit_BusIO_Register(i2c_dev, INA219_REG_CURRENT, 2, MSBFIRST);
   _success = current_reg.read(&value);
