@@ -11,6 +11,7 @@ void setup(void)
 void loop(void) 
 {
   char serial_arr[MAX_STRING_LTH];
+  uint16_t voltage_value;
   String serial = Serial.readStringUntil('\n');
   serial.toCharArray(serial_arr, MAX_STRING_LTH);
 
@@ -19,10 +20,8 @@ void loop(void)
   if(token_nr > 0 && as_token[0].as_type == KEYWORD){
     switch(as_token[0].value.as_keyword){
       case RVR:
-        Serial.print(String(read_voltage_reg(),10) + '\n');
-      break;
-      case RCR:
-        Serial.print(String(read_current_reg(),10) + '\n');
+      shunt_voltage_reg.read(&voltage_value);
+      Serial.print(String(voltage_value,10) + '\n');
       break;
       case CC:
         if(as_token[1].as_type == NUMBER){

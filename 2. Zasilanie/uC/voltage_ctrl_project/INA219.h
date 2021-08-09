@@ -67,7 +67,6 @@ bool INA219_begin(TwoWire *theWire = &Wire);
 void setCalibration_16V_1A();
 bool success();
 
-int16_t read_voltage_reg();
 void callib_voltage(float measured_voltage_mv);
 float read_voltage();
 float read_voltage_coefficient();
@@ -76,5 +75,9 @@ int16_t read_current_reg();
 void callib_current(float measured_current_ma);
 float read_current();
 float read_current_coefficient();
+
+extern Adafruit_BusIO_Register current_reg;
+extern Adafruit_BusIO_Register shunt_voltage_reg;
+
 
 #endif
