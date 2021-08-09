@@ -5,7 +5,7 @@
 struct keyword as_keyword_list[MAX_KEYWORD_NR]=
     {
         {RVR, "rvr"},
-        {RCR,"rcr"},
+        {RBR, "rbr"},
         {CC, "cc"},
         {CV, "cv"},
         {RC, "rc"},

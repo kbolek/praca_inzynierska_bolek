@@ -45,12 +45,6 @@
 /** BUS VOLTAGE REGISTER**/
 #define INA219_REG_BUSVOLTAGE (0x02)
 
-/** CURRENT REGISTER **/
-#define INA219_REG_CURRENT (0x04)
-
-/** CALLIBRATION REGISTER **/
-#define INA219_REG_CALIBRATION (0x05)
-
 /*RSHUNT*/
 #define INA219_RSHUNT 0.1f
 #define INA219_ADC_RESOLUTION 4096.0f
@@ -71,13 +65,11 @@ void callib_voltage(float measured_voltage_mv);
 float read_voltage();
 float read_voltage_coefficient();
 
-int16_t read_current_reg();
 void callib_current(float measured_current_ma);
 float read_current();
 float read_current_coefficient();
 
-extern Adafruit_BusIO_Register current_reg;
 extern Adafruit_BusIO_Register shunt_voltage_reg;
-
+extern Adafruit_BusIO_Register bus_voltage_reg;
 
 #endif

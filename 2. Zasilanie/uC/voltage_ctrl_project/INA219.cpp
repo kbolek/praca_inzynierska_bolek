@@ -41,6 +41,9 @@ void setCalibration_16V_1A(){
 
     shunt_voltage_reg =
     Adafruit_BusIO_Register(i2c_dev, INA219_REG_SHUNTVOLTAGE, 2, MSBFIRST);
+
+    bus_voltage_reg =
+      Adafruit_BusIO_Register(i2c_dev, INA219_REG_BUSVOLTAGE, 2, MSBFIRST);
 }
 
 /*=========================================================================
@@ -78,6 +81,12 @@ void callib_voltage(float measured_voltage_mv){
   EEPROM.put(0,coefficient);
 }
 
+float read_voltage_coefficient(){
+  float coefficient;
+  EEPROM.get(0,coefficient);
+  return coefficient;
+}
+
 float read_voltage(){
   float coefficient;
   uint16_t voltage_value;
@@ -87,10 +96,6 @@ float read_voltage(){
   return voltage_value * coefficient;
 }
 
-float read_voltage_coefficient(){
-  float coefficient;
-  EEPROM.get(0,coefficient);
-  return coefficient;
-}
+
 
 

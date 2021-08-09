@@ -12,6 +12,7 @@ void loop(void)
 {
   char serial_arr[MAX_STRING_LTH];
   uint16_t voltage_value;
+  uint16_t bus_voltage_value;
   String serial = Serial.readStringUntil('\n');
   serial.toCharArray(serial_arr, MAX_STRING_LTH);
 
@@ -22,6 +23,12 @@ void loop(void)
       case RVR:
       shunt_voltage_reg.read(&voltage_value);
       Serial.print(String(voltage_value,10) + '\n');
+      break;
+      case RBR:
+       bus_voltage_reg.read(&bus_voltage_value);
+       // Shift to the right 3 to drop CNVR and OVF and multiply by LSB
+       bus_voltage_value = (int16_t)((bus_voltage_value >> 3) * 4);
+       Serial.print(String(bus_voltage_value,10) + '\n');
       break;
       case CC:
         if(as_token[1].as_type == NUMBER){
