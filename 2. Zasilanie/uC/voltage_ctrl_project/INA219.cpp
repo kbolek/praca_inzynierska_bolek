@@ -3,109 +3,92 @@
 #include "Arduino.h"
 #include "INA219.h"
 
-Adafruit_I2CDevice *i2c_dev = NULL;
-uint8_t ina219_i2caddr = -1;
-bool _success;
+Adafruit_I2CDevice *i2c_dev = new Adafruit_I2CDevice(INA219_ADDRESS, &Wire);;
+
+Adafruit_BusIO_Register shunt_voltage_reg =
+    Adafruit_BusIO_Register(i2c_dev, INA219_REG_SHUNTVOLTAGE, 2, MSBFIRST);
+
+Adafruit_BusIO_Register bus_voltage_reg =
+    Adafruit_BusIO_Register(i2c_dev, INA219_REG_BUSVOLTAGE, 2, MSBFIRST);
+
+Adafruit_BusIO_Register config_reg =
+            Adafruit_BusIO_Register(i2c_dev, INA219_REG_CONFIG, 2, MSBFIRST);
+
+uint16_t config;
 
 /*=========================================================================
                     INA219 CONFIGURATION FUNCTIONS
 **************************************************************************/
-
-bool INA219_begin(TwoWire *theWire){
-    ina219_i2caddr = INA219_ADDRESS;
-
-    if (!i2c_dev) {
-        i2c_dev = new Adafruit_I2CDevice(ina219_i2caddr, theWire);
-    }
-
-    if (!i2c_dev->begin()) {
-        return false;
-    }
-
-    if(_success != true){
-        return false;
-    }
-
-    return true;
-}
-
-void setCalibration_16V_1A(){
-  Adafruit_BusIO_Register calibration_reg =
-      Adafruit_BusIO_Register(i2c_dev, INA219_REG_CALIBRATION, 2, MSBFIRST);
-  calibration_reg.write(INA219_CAL_VALUE, 2);
-
-    uint16_t config = INA219_CONFIG_BVOLTAGERANGE_16V |
-                      INA219_CONFIG_GAIN_1_40MV  | INA219_CONFIG_BADCRES_12BIT_128S_69MS| 
+void INA219_configure(){
+    config = INA219_CONFIG_BVOLTAGERANGE_16V |
+                      INA219_CONFIG_GAIN_4_160MV | INA219_CONFIG_BADCRES_12BIT_128S_69MS| 
                       INA219_CONFIG_SADCRES_12BIT_128S_69MS| 
                       INA219_CONFIG_MODE_SANDBVOLT_CONTINUOUS; 
-    Adafruit_BusIO_Register config_reg =
-            Adafruit_BusIO_Register(i2c_dev, INA219_REG_CONFIG, 2, MSBFIRST);
-    _success = config_reg.write(config, 2);
 
+    i2c_dev->begin();                  
+    config_reg.write(config, 2);
 }
+
 
 /*=========================================================================
-        INA219 FUNCTIONS FOR READING THE CURRENT
+            FUNCTIONS FOR READING REGISTERS
 **************************************************************************/
-int16_t read_current_reg(){
-  uint16_t value;
+int16_t register_shunt(){
+  uint16_t reg_value;
+  
+  config_reg.write(config,2);
+  shunt_voltage_reg.read(&reg_value);
 
-  /*sometimes a sharp load will reset the INA219, which will reset cal register*/
-  Adafruit_BusIO_Register calibration_reg =
-      Adafruit_BusIO_Register(i2c_dev, INA219_REG_CALIBRATION, 2, MSBFIRST);
-  calibration_reg.write(INA219_CAL_VALUE, 2);
-
-  Adafruit_BusIO_Register current_reg =
-      Adafruit_BusIO_Register(i2c_dev, INA219_REG_CURRENT, 2, MSBFIRST);
-  _success = current_reg.read(&value);
-  return value;
+  return reg_value;
 }
 
-void callib_current(float measured_current_ma){
-  float coefficient = measured_current_ma/read_current_reg();
-  EEPROM.put(1,coefficient);
+int16_t register_bus(){
+  uint16_t reg_value;
 
+  config_reg.write(config,2);
+  bus_voltage_reg.read(&reg_value);
+
+  return (reg_value>>3);
 }
 
-float read_current(){
+
+/*=========================================================================
+            FUNCTIONS FOR CURRENT
+**************************************************************************/
+
+void current_callib(float measured_mA){
+  float coefficient = measured_mA/register_shunt();
+  EEPROM.put(EEPROM_CUR_COEF_ADDR,coefficient);
+}
+
+float current_read_coefficient(){
   float coefficient;
-  EEPROM.get(1,coefficient);
-  return read_current_reg() * coefficient;
-}
-
-float read_current_coefficient(){
-  float coefficient;
-  EEPROM.get(1,coefficient);
+  EEPROM.get(EEPROM_CUR_COEF_ADDR,coefficient);
   return coefficient;
 }
 
+float current_read(){
+  float coefficient;
+  EEPROM.get(0,coefficient);
+  return register_shunt() * coefficient;
+}
+
 /*=========================================================================
-        INA219 FUNCTIONS FOR READING THE SHUNT VOLTAGE
+            FUNCTIONS FOR VOLTAGE
 **************************************************************************/
-int16_t read_voltage_reg() {
-  uint16_t value;
-  Adafruit_BusIO_Register shunt_voltage_reg =
-      Adafruit_BusIO_Register(i2c_dev, INA219_REG_SHUNTVOLTAGE, 2, MSBFIRST);
-  _success = shunt_voltage_reg.read(&value);
-  return value;
+void voltage_callib(float measured_mV){
+  float coefficient = measured_mV/register_bus();
+  EEPROM.put(EEPROM_VOL_COEF_ADDR,coefficient);
 }
 
-void callib_voltage(float measured_voltage_mv){
-  /*ASSUMPTION: THE FUNCTION IS EXPRESSED AS Y=AX*/
-  float coefficient = measured_voltage_mv/(read_voltage_reg());
-  EEPROM.put(0,coefficient);
-}
-
-float read_voltage(){
+float voltage_read_coefficient(){
   float coefficient;
-  EEPROM.get(0,coefficient);
-  return read_voltage_reg() * coefficient;
-}
-
-float read_voltage_coefficient(){
-  float coefficient;
-  EEPROM.get(0,coefficient);
+  EEPROM.get(EEPROM_VOL_COEF_ADDR,coefficient);
   return coefficient;
 }
 
-
+float voltage_read(){
+  float coefficient;
+  EEPROM.get(EEPROM_VOL_COEF_ADDR,coefficient);
+  return register_bus() * coefficient;
+}

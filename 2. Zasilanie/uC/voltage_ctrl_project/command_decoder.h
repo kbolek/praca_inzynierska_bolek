@@ -8,7 +8,7 @@
 #define DELIMITER_CHAR 0x20
 
 enum token_type { KEYWORD, NUMBER, STRING};
-enum keyword_code {RVR,RCR,CC,CV,RC,RV,RCC,RVC};
+enum keyword_code {RS,RB,CC,CR,CRC,VC,VR,VRC};
 enum result { OK, FAIL };
 
 

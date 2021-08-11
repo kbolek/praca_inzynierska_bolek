@@ -22,7 +22,11 @@
 
 /** MASK FOR GAIN BITS**/
 #define INA219_CONFIG_GAIN_MASK (0x1800)
+
 #define INA219_CONFIG_GAIN_1_40MV (0x0000)
+#define INA219_CONFIG_GAIN_2_80MV (0x0800) 
+#define INA219_CONFIG_GAIN_4_160MV (0x1000)
+#define INA219_CONFIG_GAIN_8_320MV (0x1800)
 
 /** MASK FOR BUS ADC RESOLUTION BITS**/
 #define INA219_CONFIG_BADCRES_MASK (0x0780)
@@ -45,36 +49,32 @@
 /** BUS VOLTAGE REGISTER**/
 #define INA219_REG_BUSVOLTAGE (0x02)
 
-/** CURRENT REGISTER **/
-#define INA219_REG_CURRENT (0x04)
+/**EEPROM ADDRESS FOR CURRENT COEFFICIENT **/
+#define EEPROM_CUR_COEF_ADDR 0
 
-/** CALLIBRATION REGISTER **/
-#define INA219_REG_CALIBRATION (0x05)
-
-/*RSHUNT*/
-#define INA219_RSHUNT 0.1f
-#define INA219_ADC_RESOLUTION 4096.0f
-#define INA219_CURRENT_LSB 0.000031f
-
-#define INA219_CAL_VALUE ((INA219_ADC_RESOLUTION * 0.00001f) / (INA219_CURRENT_LSB*INA219_RSHUNT))
-#define INA219_CURRENT_DIVIDER (1.0f / (INA219_CURRENT_LSB * 1000.0f) )
+/**EEPROM ADDRESS FOR VOLTAGE COEFFICIENT **/
+#define EEPROM_VOL_COEF_ADDR 4
 
 /*=========================================================================
                          LIBRARY FUNCTIONS
 **************************************************************************/
-
-bool INA219_begin(TwoWire *theWire = &Wire);
-void setCalibration_16V_1A();
+void INA219_configure();
 bool success();
 
-int16_t read_voltage_reg();
-void callib_voltage(float measured_voltage_mv);
-float read_voltage();
-float read_voltage_coefficient();
+int16_t register_shunt();
+int16_t register_bus();
 
-int16_t read_current_reg();
-void callib_current(float measured_current_ma);
-float read_current();
-float read_current_coefficient();
+void current_callib(float measured_mA);
+float current_read();
+float current_read_coefficient();
+
+void voltage_callib(float measured_mV);
+float voltage_read();
+float voltage_read_coefficient();
+
+extern Adafruit_BusIO_Register shunt_voltage_reg;
+extern Adafruit_BusIO_Register bus_voltage_reg;
+extern Adafruit_BusIO_Register config_reg;
+extern uint16_t config;
 
 #endif
