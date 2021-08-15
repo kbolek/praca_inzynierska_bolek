@@ -1,12 +1,6 @@
 #ifndef INA219_H
 #define INA219_H
 
-#include "Arduino.h"
-#include <Adafruit_BusIO_Register.h>
-#include <Adafruit_I2CDevice.h>
-#include <Wire.h>
-
-
 /*=========================================================================
     LIBRARY MACROS FOR DESIRE PARAMETERS OF THE MEASUREMENT
 **************************************************************************/
@@ -54,27 +48,4 @@
 
 /**EEPROM ADDRESS FOR VOLTAGE COEFFICIENT **/
 #define EEPROM_VOL_COEF_ADDR 4
-
-/*=========================================================================
-                         LIBRARY FUNCTIONS
-**************************************************************************/
-void INA219_configure();
-bool success();
-
-int16_t register_shunt();
-int16_t register_bus();
-
-void current_callib(float measured_mA);
-float current_read();
-float current_read_coefficient();
-
-void voltage_callib(float measured_mV);
-float voltage_read();
-float voltage_read_coefficient();
-
-extern Adafruit_BusIO_Register shunt_voltage_reg;
-extern Adafruit_BusIO_Register bus_voltage_reg;
-extern Adafruit_BusIO_Register config_reg;
-extern uint16_t config;
-
 #endif
