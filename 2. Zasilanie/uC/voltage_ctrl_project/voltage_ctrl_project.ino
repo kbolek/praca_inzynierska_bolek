@@ -9,14 +9,18 @@ Meter voltage(INA219_REG_BUSVOLTAGE,3);
 
 void setup(void) 
 {
+  pinMode(13,OUTPUT);
   Serial.setTimeout(-1);
   Serial.begin(9600);
+  
+  
   Meter::i2c_dev->begin();
 }
 
 
 void loop(void) 
 {
+  digitalWrite(13,HIGH);
   char serial_arr[MAX_STRING_LTH];
   String serial = Serial.readStringUntil('\r');
   serial.toCharArray(serial_arr, MAX_STRING_LTH);
