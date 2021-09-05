@@ -2,7 +2,7 @@ import serial
 import time
 
 class INA219(serial.Serial):          
-    def __init__(self, port_name = "COM4" , baud_rate = 9600, time_out = 5):
+    def __init__(self, port_name = "COM6" , baud_rate = 9600, time_out = 5):
         self.port_name = port_name
         self.baud_rate = baud_rate
         self.time_out = time_out          
@@ -23,7 +23,6 @@ class INA219(serial.Serial):
     def callib(self,value):
         self.write(("cc " + str(value) + "\r").encode())
         self.current = self.readline().decode('utf-8').strip()
-        print(self.current)
               
 if __name__ == '__main__':
     with INA219() as ina:

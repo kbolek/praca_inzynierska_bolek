@@ -25,7 +25,7 @@ class MiliAmperoMeter(serial.Serial):
 if __name__ == '__main__':
     with MiliAmperoMeter() as current_meter:   
         for i in range(5):
-            current_meter.read_current()
+            print(current_meter.read_current())
             time.sleep(1)
 
 
