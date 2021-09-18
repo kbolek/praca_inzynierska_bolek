@@ -13,14 +13,17 @@ void setup(void)
   Serial.setTimeout(-1);
   Serial.begin(9600);
   
-  
-  Meter::i2c_dev->begin();
+  if(Meter::i2c_dev->begin()){
+    digitalWrite(13,HIGH);
+  }
+  else{
+    Serial.println("Failed to find INA219 chip");
+  }
 }
 
 
 void loop(void) 
 {
-  digitalWrite(13,HIGH);
   char serial_arr[MAX_STRING_LTH];
   String serial = Serial.readStringUntil('\r');
   serial.toCharArray(serial_arr, MAX_STRING_LTH);

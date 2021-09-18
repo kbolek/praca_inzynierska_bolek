@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
-# -*- coding: utf-8 -*-
 import numpy as np
 from matplotlib import pyplot as plt
 
 
-FILE_PATH = 'SWEEP CURRENT 0-1mA (DC).npy'
+FILE_PATH = './data/SWEEP CURRENT 0-1mA (DC).npy'
 
 with open(FILE_PATH,'rb') as file:
     data = np.load(file)
