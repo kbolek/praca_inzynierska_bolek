@@ -4,8 +4,6 @@ from matplotlib import pyplot as plt
 
 
 FILE_PATH = './CORNER_SETTINGS.npz'
-corner_settings = ['40MV_1S_9BIT','40MV_1S_12BIT','40MV_128S_12BIT','320MV_1S_9BIT', '320MV_1S_12BIT', '320MV_128S_12BIT']
-
 
 with open(FILE_PATH,'rb') as file:
     data = np.load(file)

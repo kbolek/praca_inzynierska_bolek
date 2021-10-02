@@ -8,7 +8,7 @@ from rigollib import MiliAmperoMeter
 from ina219lib import INA219
 from pathlib import Path 
 
-NAME = "CORNER_SETTINGS"
+NAME = "CORNER_SETTINGS2"
 MEASURE_RANGE = 100
 
 settings_lut = np.load("ina219_settings.npy",allow_pickle='TRUE').item()
@@ -40,6 +40,7 @@ try:
         
         for count,ina_setting in enumerate(settings):
             ina.callib_device(settings_lut[ina_setting])
+            time.sleep(1)
             ina_current[count][i-1] = float(ina.read_current())
             print(ina_current[count][i-1]) 
             time.sleep(1)         
