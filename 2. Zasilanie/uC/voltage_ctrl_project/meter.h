@@ -6,10 +6,10 @@
 #include <Adafruit_I2CDevice.h>
 
 
-#define CONFIG (INA219_CONFIG_BVOLTAGERANGE_16V | \
+#define DEFAULT_CONFIG (INA219_CONFIG_BVOLTAGERANGE_16V | \
                INA219_CONFIG_GAIN_1_40MV | \
-               INA219_CONFIG_BADCRES_12BIT_128S_69MS| \
-               INA219_CONFIG_SADCRES_12BIT_128S_69MS| \
+               INA219_CONFIG_BADCRES_12BIT_128S_69MS | \
+               INA219_CONFIG_SADCRES_12BIT_128S_69MS | \
                INA219_CONFIG_MODE_SANDBVOLT_CONTINUOUS)
 
 class Meter {  
@@ -18,11 +18,11 @@ class Meter {
       Adafruit_BusIO_Register *voltage_reg;
       int eeprom_ix;     
       int shif_nr;      
-      float callib_coeff;  
-         
+      float callib_coeff;       
    public:
       static Adafruit_I2CDevice *i2c_dev;
       static unsigned char eeprom_ptr;
+      uint16_t device_configuration;
 
       Meter(int voltage_type, int  _shif_nr){ 
          if (!Meter::i2c_dev) {
@@ -31,6 +31,8 @@ class Meter {
       
          config_reg  = new Adafruit_BusIO_Register(i2c_dev, INA219_REG_CONFIG, 2, MSBFIRST);
          voltage_reg = new Adafruit_BusIO_Register(i2c_dev, voltage_type, 2, MSBFIRST);      
+
+         device_configuration = DEFAULT_CONFIG;
          
          eeprom_ix = eeprom_ptr;
          eeprom_ptr += sizeof(float);
@@ -42,7 +44,7 @@ class Meter {
       
       uint16_t register_read(){
          uint16_t reg_value;         
-         config_reg->write(CONFIG, 2);
+         config_reg->write(device_configuration, 2);
          voltage_reg->read(&reg_value);         
          return (reg_value >> shif_nr);
       }
@@ -60,6 +62,3 @@ class Meter {
         return (register_read() * callib_coeff);
       }     
 };
-
-
-

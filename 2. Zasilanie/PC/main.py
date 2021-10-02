@@ -1,5 +1,6 @@
 import sys
 import numpy as np
+import time
 
 from matplotlib import pyplot as plt
 from sparkfunlib import CurrentSource
@@ -7,9 +8,13 @@ from rigollib import MiliAmperoMeter
 from ina219lib import INA219
 from pathlib import Path 
 
-NAME = "./data/SWEEP CURRENT 1-50mA (DC)"
+NAME = "CORNER_SETTINGS"
+MEASURE_RANGE = 100
 
-ina_current = []
+settings_lut = np.load("ina219_settings.npy",allow_pickle='TRUE').item()
+settings = ['40MV_1S_9BIT','40MV_1S_12BIT','40MV_128S_12BIT','320MV_1S_9BIT', '320MV_1S_12BIT', '320MV_128S_12BIT']
+
+ina_current = np.zeros(shape=(len(settings),MEASURE_RANGE))
 rigol_current  = []
 
 if Path(NAME+".npy").is_file():
@@ -25,47 +30,51 @@ try:
     current_source.current_set(1000)
     I = current_meter.read_current()
     print(I)
-    ina.callib(I)          
+    ina.callib(I)  
+    time.sleep(2)        
     
     #Acquisition          
-    for i in range(1,100):
+    for i in range(1,MEASURE_RANGE+1):
         print(i)
         current_source.current_set(i)
-        I = ina.read_current()
+        
+        for count,ina_setting in enumerate(settings):
+            ina.callib_device(settings_lut[ina_setting])
+            ina_current[count][i-1] = float(ina.read_current())
+            print(ina_current[count][i-1]) 
+            time.sleep(1)         
         Iref = current_meter.read_current()
-        ina_current.append(float(I))
         rigol_current.append(Iref)      
-        print(float(I))
-        print(Iref)
             
     ina.exit()
         
 except Exception as exc:
         print(exc)
-               
-finally:
-        
-        y =  np.array(ina_current)
+                
+finally:        
         x = np.array(rigol_current)
-         
-        y_std = np.std(y)
-        y_mean = np.mean(y)
-         
-        plt.figure(figsize=(12.8, 9.6))
-       
-        plt.title("Current measurement (std: {:.3f}, mean: {:.2f}) for ".format(y_std, y_mean) + NAME ,fontsize=17)
-        plt.ylabel("Current measured by INA219 (mA)")
-        plt.xlabel("Current measured by Rigol (mA)")
+        configs = np.array(settings)
+        
+        for count,config in enumerate(settings):
+            y = ina_current[count]
+            y_std = np.std(y)
+            y_mean = np.mean(y)
+            
+            plt.figure(figsize=(12.8, 9.6))
+        
+            plt.title("Current measurement (std: {:.3f}, mean: {:.2f}) for ".format(y_std, y_mean) + config ,fontsize=17)
+            plt.ylabel("Current measured by INA219 (mA)")
+            plt.xlabel("Current measured by Rigol (mA)")
           
-        plt.scatter(x,y)
-        plt.show() 
-         
-        data = np.array([x,y])
-        np.save(NAME+".npy",data)
+            plt.scatter(x,y)
+            plt.show()                  
+        
+        data_x = np.array(x)
+        data_y = ina_current
+        np.savez(NAME+".npz",x = data_x,y = data_y,title = configs)
     
     
         
     
     
 
-                  
