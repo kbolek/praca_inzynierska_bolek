@@ -69,6 +69,16 @@ void loop(void)
       case VRC:
         Serial.print(String(voltage.read_coefficient(),10) + '\n');
       break;
+      case CD:
+        if(as_token[1].as_type == NUMBER){
+          current.device_configuration = uint16_t(as_token[1].value.number);
+          voltage.device_configuration = uint16_t(as_token[1].value.number);
+          Serial.print("device_calibrated\n");
+        }
+        else{
+          Serial.print("unknowncommand\n");
+        } 
+      break;
     }
   }
   else{

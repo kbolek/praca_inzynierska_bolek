@@ -11,7 +11,8 @@ struct keyword as_keyword_list[MAX_KEYWORD_NR]=
         {CRC, "crc"},
         {VC, "vc"},
         {VR, "vr"},
-        {VRC, "vrc"}  
+        {VRC, "vrc"},
+        {CD, "cd"}  
     };
 struct token as_token[MAX_TOKEN_NR];
 enum state{TOKEN,DELIMITER};

@@ -4,11 +4,11 @@
 #define MAX_TOKEN_NR 2 
 #define MAX_KEYWORD_STRING_LTH 3 
 #define MAX_STRING_LTH 9
-#define MAX_KEYWORD_NR 8
+#define MAX_KEYWORD_NR 9
 #define DELIMITER_CHAR 0x20
 
 enum token_type { KEYWORD, NUMBER, STRING};
-enum keyword_code {RS,RB,CC,CR,CRC,VC,VR,VRC};
+enum keyword_code { RS,RB,CC,CR,CRC,VC,VR,VRC,CD };
 enum result { OK, FAIL };
 
 

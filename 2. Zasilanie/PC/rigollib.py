@@ -10,7 +10,10 @@ class MiliAmperoMeter(SerialHandler):
             self.ser.open()   
         self.current = super().serial_wr(':measure:current:dc?\n')
         super().exit()
-        return float(self.current[1:])*1000
+        if self.current[1:] != 'E':
+            return float(self.current[1:])*1000
+        else:
+            return self.read_current()
        
 if __name__ == '__main__':
     current_meter =  MiliAmperoMeter() 
